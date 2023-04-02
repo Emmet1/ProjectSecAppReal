@@ -18,28 +18,28 @@ import javafx.stage.Stage;
  *
  * @author Emmet
  */
-public class Login extends Application {
+// The start() method is overridden from the Application class.
+@Override
+public void start(Stage stage) throws IOException {
 
-    @Override
-    public void start(Stage stage) throws IOException {
+    // Load the Login.fxml file using the FXMLLoader class.
+    Parent root = FXMLLoader.load(getClass().getResource("/application/Login.fxml"));
 
-        Parent root = FXMLLoader.load(getClass().getResource("/application/Login.fxml"));
+    // Create a new Scene with the loaded fxml file as the root node and set its dimensions.
+    Scene scene = new Scene(root, 600, 400);
 
-        Scene scene = new Scene(root, 600, 400);
+    // Set the Scene as the stage's scene and set the stage's title.
+    stage.setScene(scene);
+    stage.setTitle("UQU");
 
-        stage.setScene(scene);
-        stage.setTitle("UQU");
+    // Show the stage.
+    stage.show();
+}
 
-        stage.show();
-    }
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        launch(args);
-    }
-
+// This is the main method of the application.
+public static void main(String[] args) {
+    // Call the launch() method to start the JavaFX application.
+    launch(args);
 }
 
 
