@@ -20,8 +20,13 @@ import java.net.URL;
         import javafx.scene.image.Image;
         import javafx.scene.image.ImageView;
         import javafx.stage.Stage;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-public class LoginController implements Initializable {
+
+
+public class Controller implements Initializable {
     @FXML private Label Titlelbl;
     @FXML private Label UserNamelbl;
     @FXML private Label Passwordlbl;
@@ -49,19 +54,37 @@ public class LoginController implements Initializable {
         if (UserNametxt.getText().isEmpty()) {
             valid = false;
             Outputlbl1.setText("Please Enter User Name ");
-        } else if (UserNametxt.getText().equals("Ali")) {
-            Outputlbl1.setText("Welcome");
-        } else {
-            Outputlbl1.setText("In");
         }
 
         if (Passwordtxt.getText().isEmpty()) {
             valid = false;
             Outputlbl2.setText("Please Enter Password");
-        } else {
-            Outputlbl2.setText("");
+        }
+
+        if (valid) {
+            String username = UserNametxt.getText();
+            String password = Passwordtxt.getText();
+
+            User user = UserDatabase.getUser(username);
+            if (user != null && user.getPassword().equals(password)) {
+                // User is authenticated, create a new session and set the user's role
+                HttpSession session = request.getSession(true);
+                session.setAttribute("user", user);
+                session.setAttribute("role", user.getRoles().iterator().next());
+
+                // Redirect to the appropriate screen based on the user's role
+                if (user.getRoles().contains("admin")) {
+                    response.sendRedirect("admin-screen.jsp");
+                } else if (user.getRoles().contains("user")) {
+                    response.sendRedirect("user-screen.jsp");
+                }
+            } else {
+                Outputlbl1.setText(HtmlUtils.htmlEscape("Invalid username or password"));
+            }
         }
     }
+
+
 
     @FXML
     private void Registerbtn(ActionEvent event) {

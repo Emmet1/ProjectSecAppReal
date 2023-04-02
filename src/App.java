@@ -8,6 +8,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.servlet.http.Cookie;
+import javafx.servlet.http.HttpServletRequest;
 
 public class App extends Application  {
     private StackPane root = new StackPane();
@@ -41,15 +43,38 @@ public class App extends Application  {
     }
 
     @Override
-    public void start(Stage primaryStage) {
-        Scene scene = new Scene(root,400,600);
-        primaryStage.setScene(scene);
-        primaryStage.show();
-        primaryStage.setTitle("Login Example JavaFX");
-        primaryStage.setAlwaysOnTop(true);
+    public void start(Stage primaryStage) throws Exception {
+        // Get the session ID from the cookie
+        HttpServletRequest request = new HttpServletRequestWrapper(request);
+        Cookie[] cookies = request.getCookies();
+        String sessionId = null;
+        for (Cookie cookie : cookies) {
+            if (cookie.getName().equals("sessionId")) {
+                sessionId = cookie.getValue();
+                break;
+            }
+        }
+
+        // Check if the session ID is valid
+        if (sessionId != null && isValidSessionId(sessionId)) {
+            // User is logged in, display the main screen
+            // ...
+        } else {
+            // User is not logged in, display the login screen
+            // ...
+        }
     }
 
-
+    private boolean isValidSessionId(String sessionId) {
+        // Check if the session ID is not null or empty
+        if (sessionId != null && !sessionId.isEmpty()) {
+            // Session ID is valid
+            return true;
+        } else {
+            // Session ID is invalid
+            return false;
+        }
+    }
     public static void main(String[] args) {
         launch(args);
     }
