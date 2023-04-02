@@ -11,17 +11,24 @@ import javafx.stage.Stage;
 import javafx.servlet.http.Cookie;
 import javafx.servlet.http.HttpServletRequest;
 
-public class App extends Application  {
+/**
+ * The App class is a JavaFX application that provides a login interface
+ * and handles user authentication.
+ */
+public class App extends Application {
     private StackPane root = new StackPane();
     private Stage stage;
 
+    /**
+     * Initializes the user interface components for the application.
+     */
     @Override
     public void init() {
         Button button = new Button("OPEN");
         VBox vBox = new VBox();
 
         vBox.setSpacing(8);
-        vBox.setPadding(new Insets(10,10,10,10));
+        vBox.setPadding(new Insets(10, 10, 10, 10));
         vBox.getChildren().addAll(
                 new Label("Your Username"),
                 new TextField(),
@@ -30,18 +37,25 @@ public class App extends Application  {
                 new Button("LOGIN"));
         root.getChildren().addAll(vBox);
 
-        button.setOnAction(actionEvent-> {
-            if(stage!=null){
+        button.setOnAction(actionEvent -> {
+            if (stage != null) {
                 stage.requestFocus();
                 return;
             }
             stage = new Stage();
             StackPane stackPane = new StackPane();
-            stage.setScene(new Scene(stackPane, 200,200));
+            stage.setScene(new Scene(stackPane, 200, 200));
             stage.show();
         });
     }
 
+    /**
+     * Starts the JavaFX application by showing the appropriate UI,
+     * depending on the user's login status.
+     *
+     * @param primaryStage the primary stage for this application
+     * @throws Exception if an error occurs during initialization
+     */
     @Override
     public void start(Stage primaryStage) throws Exception {
         // Get the session ID from the cookie
@@ -65,6 +79,12 @@ public class App extends Application  {
         }
     }
 
+    /**
+     * Validates the given session ID to determine if the user is logged in.
+     *
+     * @param sessionId the session ID to check
+     * @return true if the session ID is valid, false otherwise
+     */
     private boolean isValidSessionId(String sessionId) {
         // Check if the session ID is not null or empty
         if (sessionId != null && !sessionId.isEmpty()) {
@@ -75,6 +95,12 @@ public class App extends Application  {
             return false;
         }
     }
+
+    /**
+     * The main entry point for the application.
+     *
+     * @param args command-line arguments
+     */
     public static void main(String[] args) {
         launch(args);
     }
