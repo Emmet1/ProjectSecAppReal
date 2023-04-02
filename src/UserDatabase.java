@@ -33,3 +33,4 @@ public static User getUser(String username) {
     // If the user was not found, return null.
     return null;
 }
+
