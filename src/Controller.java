@@ -48,44 +48,46 @@ public class Controller implements Initializable {
     }
 
     @FXML
-    private void Login(ActionEvent event) {
-        boolean valid = true;
+  // Check if the username field is empty and display an error message if it is.
+if (UserNametxt.getText().isEmpty()) {
+    valid = false;
+    Outputlbl1.setText("Please Enter User Name ");
+}
 
-        if (UserNametxt.getText().isEmpty()) {
-            valid = false;
-            Outputlbl1.setText("Please Enter User Name ");
+// Check if the password field is empty and display an error message if it is.
+if (Passwordtxt.getText().isEmpty()) {
+    valid = false;
+    Outputlbl2.setText("Please Enter Password");
+}
+
+// If both fields are not empty, attempt to authenticate the user.
+if (valid) {
+    String username = UserNametxt.getText();
+    String password = Passwordtxt.getText();
+
+    // Attempt to retrieve the user's information from the database.
+    User user = UserDatabase.getUser(username);
+    if (user != null && user.getPassword().equals(password)) {
+        // If the user is authenticated, create a new session and set the user's role.
+        HttpSession session = request.getSession(true);
+        session.setAttribute("user", user);
+        session.setAttribute("role", user.getRoles().iterator().next());
+
+        // Redirect to the appropriate screen based on the user's role.
+        if (user.getRoles().contains("admin")) {
+            response.sendRedirect("admin-screen.jsp");
+        } else if (user.getRoles().contains("user")) {
+            response.sendRedirect("user-screen.jsp");
         }
-
-        if (Passwordtxt.getText().isEmpty()) {
-            valid = false;
-            Outputlbl2.setText("Please Enter Password");
-        }
-
-        if (valid) {
-            String username = UserNametxt.getText();
-            String password = Passwordtxt.getText();
-
-            User user = UserDatabase.getUser(username);
-            if (user != null && user.getPassword().equals(password)) {
-                // User is authenticated, create a new session and set the user's role
-                HttpSession session = request.getSession(true);
-                session.setAttribute("user", user);
-                session.setAttribute("role", user.getRoles().iterator().next());
-
-                // Redirect to the appropriate screen based on the user's role
-                if (user.getRoles().contains("admin")) {
-                    response.sendRedirect("admin-screen.jsp");
-                } else if (user.getRoles().contains("user")) {
-                    response.sendRedirect("user-screen.jsp");
-                }
-            } else {
-                Outputlbl1.setText(HtmlUtils.htmlEscape("Invalid username or password"));
-            }
-        }
+    } else {
+        Outputlbl1.setText(HtmlUtils.htmlEscape("Invalid username or password"));
     }
+}
 
 
 
+
+ // This method is called when the Register button is clicked. It hides the current window and loads the SecondWindow.fxml file.
     @FXML
     private void Registerbtn(ActionEvent event) {
         try {
@@ -100,13 +102,16 @@ public class Controller implements Initializable {
         }
     }
 
-    @FXML
-    private void view(ActionEvent event) {
-        Users u = new Users();
-        ArrayList<String> uname = new ArrayList<String>();
-        ArrayList<String> pass = new ArrayList<String>();
-        uname = u.getUserNames();
-        pass = u.getPasswords();
-        System.out.println("The user Names-" + uname);
-    }
+    // This method is called when the View
+
+  // This method is called when the View button is clicked. It creates a new Users object and retrieves the usernames and passwords. It then prints the usernames to the console.
+@FXML
+private void view(ActionEvent event) {
+Users u = new Users();
+ArrayList<String> uname = new ArrayList<String>();
+ArrayList<String> pass = new ArrayList<String>();
+uname = u.getUserNames();
+pass = u.getPasswords();
+System.out.println("The user Names-" + uname);
+}
 }
